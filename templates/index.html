@@ -3,9 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    
+    <!-- BOOTSRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- END -->
+
+    <!-- BOOTSTRAP ICON -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- END -->
+
+    <title>BIONA</title>
 </head>
 <body>
-    <h1>CODE AWAL</h1>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-light bg-light shadow">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#" style="color: #76b852;">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" z>
+            <li class="nav-item" >
+              <a class="nav-link active" aria-current="page" href="#" style="color: #76b852;">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" style="color: #76b852;">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #76b852;">
+                Dropdown
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" style="color: #76b852;">Action</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>  
+    <!-- END -->
+
+    <!-- CARD-1 -->
+    <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 col-md-8 col-sm-15">
+            <div class="card mt-5" style="background-color: #76b852;  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.5); ">
+              <div class="card-body">
+                <div class="row">
+                    <!-- CARD 2 -->
+                    <div class="col-lg-8 col-md-7 col-sm-15">
+                      <div class="card" style="box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);">
+                        <div class="card-body">
+                          <h5 class="card-title">Total Saldo</h5>
+                          <h6 class="card-subtitle mb-2 text-body-secondary">Rp 2.000.000</h6>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- END -->
+        
+                    <!-- Button samping card 2 -->
+                    <div class="col-lg-4 col-md-4 col-sm-4 text-right">
+                        
+                        <a href="{{ url_for('scan') }}" class="btn btn-light mt-4" style="box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);">
+                            <div class="d-flex align-items-center">
+                              <i class="bi bi-qr-code-scan" style="color: #76b852; "></i>
+                              <br>
+                              <h6 class="ml-1 mb-0 text-right" style=" margin-left: 5px;">Scan</h6>
+                            </div>
+                        </a>
+
+                        <a href="tukar_saldo.html" class="btn btn-light mt-4" style="box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);">
+                            <div class="d-flex align-items-center">
+                              <i class="bi bi-cash" style="color: #76b852; "></i>
+                              <br>
+                              <h6 class="ml-1 mb-0 text-right" style=" margin-left: 5px;">Tukar</h6>
+                            </div>
+                        </a>
+                    </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- END -->
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col col-lg-8 col-md-8 col-sm-8">
+              <button class="btn btn-succsess" id="toggleButton">Panduan</button>
+              <p class="mt-3 d-none" id="hiddenText">1. Berangkat</p>
+              <p class="mt-3 d-none" id="hiddenText">2. Tidur</p>
+              <p class="mt-3 d-none" id="hiddenText">3. Sic</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    
+    <script>
+      const toggleButton = document.getElementById('toggleButton');
+      const hiddenText = document.getElementById('hiddenText');
+
+      toggleButton.addEventListener('click', () => {
+          hiddenText.classList.toggle('d-none');
+      });
+  </script>
+  
+    
+</body>
 </body>
 </html>

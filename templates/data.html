@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- BOOTSRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- END -->
+
+    <!-- BOOTSTRAP ICON -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- END -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>BIONA DATA</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-light bg-light shadow">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#" style="color: #76b852;">Navbar</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" z>
+              <li class="nav-item" >
+                <a class="nav-link active" aria-current="page" href="#" style="color: #76b852;">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" style="color: #76b852;">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #76b852;">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#" style="color: #76b852;">Action</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-10 col-lg-6">
+                <div class="card text-center" style="width: 18rem;">
+                    <div class="card-header">
+                      BIONA
+                    </div>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">Berat Sampah : </li>
+                      <li class="mt-2 mb-2"> <button onclick="endSession()" class="btn btn-primary">Selesai Scanning </button></li>
+                    </ul>
+                  </div>
+               
+            </div>
+        </div>
+    </div>
+    
+    
+  
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function endSession() {
+            fetch('/end_session')
+            .then(response => {
+                window.location.href = '/';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+
+<script>
+    function endSession() {
+        Swal.fire({
+            title: 'Anda yakin ingin mengakhiri sesi?',
+            text: 'Anda akan keluar dari sesi dan status pemindaian akan dihapus.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, akhiri sesi',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                    fetch('/end_session')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message === "Session ended") {
+                            Swal.fire(
+                                'Sesi Berakhir!',
+                                'Sesi Anda telah diakhiri.',
+                                'success'
+                            ).then(() => {
+                                window.location.href = '/';
+                            });
+                        } else {
+                            Swal.fire(
+                                'Sesi Gagal Diakhiri!',
+                                'Tidak ada sesi yang aktif untuk diakhiri.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+        });
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+
+</body>
+</html>

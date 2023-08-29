@@ -18,7 +18,9 @@
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-light bg-light shadow">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#" style="color: #76b852;">Navbar</a>
+        <a class="navbar-brand" href="#" style="color: #76b852;">
+          <img src="{{ url_for('static', filename='img/icon.jpg') }}" alt="Logo" width="100 px"  class="d-inline-block align-text-top">
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -39,10 +41,11 @@
               </ul>
             </li>
           </ul>
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
+          {% if 'user_id' in session %}
+          <button class="btn" onclick="confirmLogout()" style="background-color: #76b852; color: white;">Logout</button>
+          {% else %}
+          <a href="{{ url_for('login') }}" class="btn" style="background-color: #76b852; color: white;" >Login | Register</a>
+          {% endif %}
         </div>
       </div>
     </nav>  
@@ -59,8 +62,9 @@
                     <div class="col-lg-8 col-md-7 col-sm-15">
                       <div class="card" style="box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);">
                         <div class="card-body">
-                          <h5 class="card-title">Total Saldo</h5>
-                          <h6 class="card-subtitle mb-2 text-body-secondary">Rp 2.000.000</h6>
+                          <h5 class="text-body-secondary">Hi, {{ session['username'] }}!</h6>
+                          <h6 class="card-title">Total Saldo :</h6>
+                          <h6 class="card-subtitle mb-2" style="color: orange;">Rp {{ '{:,.2f}'.format(saldo) }}</h6>
                         </div>
                       </div>
                     </div>
@@ -103,6 +107,8 @@
         </div>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ url_for('static', filename='allert.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     
     <script>
@@ -113,8 +119,7 @@
           hiddenText.classList.toggle('d-none');
       });
   </script>
+
   
-    
-</body>
-</body>
+ </body>
 </html>

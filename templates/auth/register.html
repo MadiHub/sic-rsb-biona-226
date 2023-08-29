@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- BOOTSRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- END -->
+
+    <!-- BOOTSTRAP ICON -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- END -->
+
+    <title>Register</title>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-light bg-light shadow">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#" style="color: #76b852;">
+          <img src="" alt="Logo" width="100px" class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" z>
+            <li class="nav-item" >
+              <a class="nav-link active" aria-current="page" href="#" style="color: #76b852;">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" style="color: #76b852;">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #76b852;">
+                Dropdown
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" style="color: #76b852;">Action</a></li>
+              </ul>
+            </li>
+          </ul>
+          {% if 'user_id' in session %}
+          <button class="btn" onclick="confirmLogout()" style="background-color: #76b852; color: white;">Logout</button>
+          {% else %}
+          <a href="{{ url_for('login') }}" class="btn" style="background-color: #76b852; color: white;" >Login | Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>  
+    <!-- END -->
+
+       <!-- CARD-1 -->
+    <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 col-md-8 col-sm-15">
+            <div class="card mt-5 bg-light">
+              <div class="card-header text-center">
+                REGISTER
+              </div>
+              <div class="card-body">
+                {% if email_error %}
+                  <div class="alert alert-danger" role="alert">
+                    Email Sudah Terdaftar !
+                  </div>
+                {% endif %}
+                {% if password_error %}
+                  <div class="alert alert-danger" role="alert">
+                    Konfirmasi Password Salah !
+                  </div>
+                {% endif %}
+             
+
+                <form method="post">
+                    <div class="mb-3">
+                      <label for="exampleInputEmail1" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" required>
+                      
+                    </div>
+                    <div class="mb-3">
+                      <label for="exampleInputEmail1" class="form-label">Username</label>
+                      <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="exampleInputPassword1" class="form-label">Password</label>
+                      <input type="password" class="form-control" id="password" name="password" required>
+                      
+                    </div>
+                    <div class="mb-3">
+                      <label for="exampleInputPassword1" class="form-label">Konfirm Password</label>
+                      <input type="password" class="form-control" id="konfirm_password" name="konfirm_password" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                      <input type="checkbox" class="form-check-input" id="showPassword">
+                      <label class="form-check-label" for="showPassword">Show Password</label>
+                    </div>
+                    <button type="submit" class="btn w-100 " style="background-color: #76b852; color: white;">Submit</button>
+                  </form>                 
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- END -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='allert.js') }}"></script>
+
+    <!-- ERROR ALLERT -->
+    <script>      
+      function showSuccessAlert() {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Registrasi Akun Berhasil Silahkan Login !',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/login'; // Redirect to login page
+        }
+      });
+      // Remove the 'success' parameter from the URL
+      var url = new URL(window.location.href);
+      url.searchParams.delete('success');
+      history.replaceState(null, '', url);
+    }
+
+    // Check if registration was successful
+    var registrationSuccess = "{{ request.args.get('success') }}"; // Get success parameter from URL
+    if (registrationSuccess === '1') {
+      showSuccessAlert(); // Call the showSuccessAlert function
+  }
+    </script>
+
+   
+    <!-- SHOW PASS  -->
+    <script>
+      const passwordInput = document.getElementById('password');
+      const showPasswordCheckbox = document.getElementById('showPassword');
+
+      showPasswordCheckbox.addEventListener('change', () => {
+          if (showPasswordCheckbox.checked) {
+              passwordInput.type = 'text';
+          } else {
+              passwordInput.type = 'password';
+          }
+      });
+    </script>
+</body>
+</html>

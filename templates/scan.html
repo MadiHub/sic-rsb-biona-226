@@ -16,13 +16,15 @@
     <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-light bg-light shadow">
+       <!-- NAVBAR -->
+       <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-light bg-light shadow">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#" style="color: #76b852;">Navbar</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="#" style="color: #76b852;">
+            <img src="{{ url_for('static', filename='img/icon.jpg') }}" alt="Logo" width="100 px"  class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-          </button>
+        </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent" >
             <ul class="navbar-nav me-auto mb-2 mb-lg-0" z>
               <li class="nav-item" >
@@ -40,14 +42,16 @@
                 </ul>
               </li>
             </ul>
-            <form class="d-flex" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+            {% if 'user_id' in session %}
+            <button class="btn" onclick="confirmLogout()" style="background-color: #76b852; color: white;">Logout</button>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn" style="background-color: #76b852; color: white;" >Login | Register</a>
+            {% endif %}
           </div>
         </div>
-    </nav>
-    <!-- END -->
+      </nav>  
+      <!-- END -->
+  
     <div class="container">
         <div class="row justify-content-center">
             <div class="col col-lg-8 col-md-8 col-sm-15">

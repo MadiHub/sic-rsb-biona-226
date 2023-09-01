@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 29 Agu 2023 pada 20.19
+-- Waktu pembuatan: 01 Sep 2023 pada 11.07
 -- Versi server: 8.0.33-0ubuntu0.22.04.4
 -- Versi PHP: 8.1.2-1ubuntu2.13
 
@@ -20,6 +20,44 @@ SET time_zone = "+00:00";
 --
 -- Database: `sic-biona`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_payment`
+--
+
+CREATE TABLE `tb_payment` (
+  `id_payment` int NOT NULL,
+  `method` varchar(200) NOT NULL,
+  `logo` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data untuk tabel `tb_payment`
+--
+
+INSERT INTO `tb_payment` (`id_payment`, `method`, `logo`) VALUES
+(1, 'GOPAY', 'gopay.png'),
+(2, 'BCA', 'bca.png'),
+(3, 'MANDIRI', 'MANDIRI.png\r\n');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_transaksi`
+--
+
+CREATE TABLE `tb_transaksi` (
+  `id_transaksi` int NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `payment` varchar(200) NOT NULL,
+  `no_payment` int NOT NULL,
+  `nominal` int NOT NULL,
+  `tanggal_transaksi` datetime DEFAULT NULL,
+  `status` varchar(200) NOT NULL,
+  `bukti_pembayaran` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -41,11 +79,23 @@ CREATE TABLE `tb_users` (
 --
 
 INSERT INTO `tb_users` (`id`, `email`, `username`, `password`, `role`, `saldo`) VALUES
-(1, 'wpsrahmadi7@gmail.com', 'maddog', '$2b$12$gEU7FASbIaSS8XsnBn1JX.IpFnNzaYzCbHFra1q3eF8LKMCWFtEZm', 'user', 0);
+(8, 'biona226@gmail.com', 'Biona', '$2b$12$n2677u1Uy7mFKneho/BF6uvCDtSAsugUG3rgKd8oMKw6zvenjiDPK', 'user', 0);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indeks untuk tabel `tb_payment`
+--
+ALTER TABLE `tb_payment`
+  ADD PRIMARY KEY (`id_payment`);
+
+--
+-- Indeks untuk tabel `tb_transaksi`
+--
+ALTER TABLE `tb_transaksi`
+  ADD PRIMARY KEY (`id_transaksi`);
 
 --
 -- Indeks untuk tabel `tb_users`
@@ -58,10 +108,22 @@ ALTER TABLE `tb_users`
 --
 
 --
+-- AUTO_INCREMENT untuk tabel `tb_payment`
+--
+ALTER TABLE `tb_payment`
+  MODIFY `id_payment` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT untuk tabel `tb_transaksi`
+--
+ALTER TABLE `tb_transaksi`
+  MODIFY `id_transaksi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
 -- AUTO_INCREMENT untuk tabel `tb_users`
 --
 ALTER TABLE `tb_users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

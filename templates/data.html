@@ -68,12 +68,64 @@
             </div>
         </div>
     </div>
+
+       <!-- CARD-1 -->
+    <div class="container">
+      <div class="row justify-content-center">
+          <div class="col-lg-8 col-md-8 col-sm-15">
+            <div class="card mt-5 bg-light">
+              <div class="card-header text-center">
+                HASIL PEMBUANGAN 
+              </div>
+              <div class="card-body">
+                <form method="post">
+                  <div class="mb-3">
+                      <label for="berat" class="form-label">Berat (gram)</label>
+                      <input type="number" class="form-control" value="500" placeholder="berat" id="berat" name="berat" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="rupiah" class="form-label">Konversi Rupiah</label>
+                      <input type="text" class="form-control" id="rupiah" name="rupiah" readonly>
+                  </div>
+                  <div class="mb-3 form-check">
+                      <input type="checkbox" class="form-check-input" id="showPassword">
+                      <label class="form-check-label" for="showPassword">Show Password</label>
+                  </div>
+                  <a href="{{ url_for('register') }}">Belum Punya Akun ?</a>
+                  <button type="submit" style="background-color: #76b852; color: white;" class="btn mt-3 w-100">Submit</button>
+              </form>
+                      
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- END -->
+
     
     
   
+    <p>Berat: 500 gram</p>
+    <p>Harga per gram: 3 Rp</p>
+    
+    <button id="hitungButton">Hitung Total Harga</button>
+    
+    <p id="hasilHarga"></p>
 
+       <script>
+        const beratInput = document.getElementById('berat');
+        const rupiahInput = document.getElementById('rupiah');
 
+        beratInput.addEventListener('input', () => {
+            const berat = parseFloat(beratInput.value);
+            const hargaPerGram = 3;
+            const totalHarga = berat * hargaPerGram;
+
+            rupiahInput.value = `${totalHarga} Rp`;
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ url_for('static', filename='allert.js') }}"></script>
     <script>
         function endSession() {
             fetch('/end_session')

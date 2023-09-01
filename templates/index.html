@@ -13,6 +13,59 @@
     <!-- END -->
 
     <title>BIONA</title>
+
+    <style>
+      label {
+    width: 100%;
+}
+
+.hover-shadow-element {
+    display: none;
+}
+
+.badge {
+  font-size: 20px;
+  right: 15px;
+  border-radius: 50px;
+  background-color: rgb(254, 162, 50);
+  position: absolute;
+  padding: 3px;
+}
+
+.panel-body {
+  display: flex;
+  margin-right: 100px;
+}
+
+.hover-shadow {
+    margin: 10px;
+    background: #E9ECEF ;
+    border-radius: 15px;
+}
+
+.hover-shadow .harga {
+  display: none
+}
+
+[type=radio]+.hover-shadow {
+  cursor: pointer;
+}
+
+.hover-shadow-element:checked + .hover-shadow{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background: #fffffff6;
+ }
+
+ .hover-shadow-element:checked + .hover-shadow .harga {
+  display: initial;
+  margin: 10px;
+ }
+
+ .cursor-pointer{
+  cursor: pointer;
+}
+
+    </style>
 </head>
 <body>
     <!-- NAVBAR -->
@@ -81,13 +134,14 @@
                             </div>
                         </a>
 
-                        <a href="tukar_saldo.html" class="btn btn-light mt-4" style="box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);">
+                        <button id="tukar-saldo-button" class="btn btn-light mt-4" style="box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);">
                             <div class="d-flex align-items-center">
                               <i class="bi bi-cash" style="color: #76b852; "></i>
                               <br>
+                            
                               <h6 class="ml-1 mb-0 text-right" style=" margin-left: 5px;">Tukar</h6>
                             </div>
-                        </a>
+                        </button>
                     </div>
               </div>
             </div>
@@ -106,7 +160,67 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- Modal -->
+<div class="modal fade" id="metodePembayaranModal" tabindex="-1" aria-labelledby="metodePembayaranModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="metodePembayaranModalLabel">Pilih Payment Pembayaran</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <label>
+            <input type="radio" type="radio" name="metode-pembayaran" id="gopayRadio" value="gopay"
+            class=" hover-shadow-element">
+            <div class="card hover-shadow cursor" style="max-width: 100%;">
+                <span class="badge check harga">
+                  <i class="bi bi-check-lg"></i>
+                </span>
+                <img src="{{ url_for('static', filename='img/gopay.png') }}" alt="" style="padding: 10px;"
+                    width="150px">
+                <hr>
+                <p class="harga">Pembayaran Dengan <strong>Gopay</strong> </p>
+            </div>
+          </label>
+          <label>
+            <input type="radio" type="radio"name="metode-pembayaran" id="bcaRadio" value="bca"
+            class=" hover-shadow-element">
+            <div class="card hover-shadow cursor" style="max-width: 100%;">
+                <span class="badge check harga">
+                  <i class="bi bi-check-lg"></i>
+                </span>
+                <img src="{{ url_for('static', filename='img/bca.png') }}" alt="" style="padding: 10px;"
+                    width="150px">
+                <hr>
+                <p class="harga">Pembayaran Dengan <strong>BCA</strong> </p>
+            </div>
+          </label>
+          <label>
+            <input type="radio" type="radio" name="metode-pembayaran" id="mandiriRadio" value="mandiri"
+            class=" hover-shadow-element">
+            <div class="card hover-shadow cursor" style="max-width: 100%;">
+                <span class="badge check harga">
+                  <i class="bi bi-check-lg"></i>
+                </span>
+                <img src="{{ url_for('static', filename='img/MANDIRI.png') }}" alt="" style="padding: 10px;"
+                    width="150px">
+                <hr>
+                <p class="harga">Pembayaran Dengan <strong>Mandiri</strong> </p>
+            </div>
+          </label>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="konfirmasi-button">Konfirmasi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ url_for('static', filename='allert.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
@@ -119,6 +233,24 @@
           hiddenText.classList.toggle('d-none');
       });
   </script>
+
+<script>
+  $(document).ready(function() {
+    $("#tukar-saldo-button").click(function() {
+      $("#metodePembayaranModal").modal("show");
+    });
+
+    $("#konfirmasi-button").click(function() {
+      const selectedMethod = $("input[name='metode-pembayaran']:checked").val();
+      if (selectedMethod) {
+        // Mengarahkan pengguna ke tukar_saldo.html dengan parameter sesuai metode pembayaran yang dipilih
+        window.location.href = `tukar_saldo?payment=${selectedMethod}`;
+      } else {
+        alert("Silakan pilih metode pembayaran.");
+      }
+    });
+  });
+</script>
 
   
  </body>

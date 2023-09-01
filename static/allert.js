@@ -1,3 +1,24 @@
+const urlParamsReq = new URLSearchParams(window.location.search);
+ const successParamReq = urlParamsReq.get('success_req');
+
+ // If success parameter is 1, show success alert
+ if (successParamReq === '1') {
+     Swal.fire({
+         icon: 'success',
+         title: 'Success!',
+         text: 'You have successfully Request Transaksi',
+         confirmButtonColor: '#3085d6',
+         confirmButtonText: 'OK'
+     }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/'; // Redirect to login page
+        }
+      });
+      // Remove the 'success' parameter from the URL
+      var url = new URL(window.location.href);
+      url.searchParams.delete('success_req');
+      history.replaceState(null, '', url);
+ }
 
 
 // END

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, url_for, session, jsonify
-
+from datetime import datetime
 import os
 import pymysql
 import bcrypt
@@ -17,15 +17,17 @@ db = pymysql.connect(
     database="sic-biona"
 )
 
+# Validasi harus login
 @app.before_request
 def check_login():
-    # Daftar halaman yang dapat diakses ketika belum login
-    allowed_endpoints = ['login', 'register']
+    # Daftar halaman dan direktori yang dapat diakses ketika belum login
+    allowed_endpoints = ['/', 'login', 'register', 'static']
 
-    # Jika pengguna belum login dan bukan di halaman yang diizinkan, arahkan ke halaman login
-    if 'user_id' not in session and request.endpoint not in allowed_endpoints:
+    # Jika pengguna belum login dan bukan di halaman atau direktori yang diizinkan, arahkan ke halaman login
+    if 'user_id' not in session and request.endpoint not in allowed_endpoints and not request.path.startswith('/static'):
         return redirect(url_for('login'))
-
+   
+    
 @app.route('/')
 def index():
     if 'user_id' in session:
@@ -37,7 +39,10 @@ def index():
 
             if user:
                 saldo = user['saldo']
-                return render_template('index.html', saldo=saldo)
+                # Mengambil semua data dari tabel tb_payment
+                cursor.execute("SELECT * FROM tb_payment")
+                payments = cursor.fetchall()
+                return render_template('index.html', saldo=saldo, payments=payments)
     
     return render_template('index.html')
     
@@ -49,7 +54,7 @@ def scan():
 @app.route('/set_scanned_session', methods=['POST'])
 def set_scanned_session():
     content = request.json.get('content')
-    if content == 'BIONA':
+    if content == 'biona':
         session['scanned'] = True
         session['scanned_content'] = content
         return jsonify(message="Scanned session set to True")
@@ -59,7 +64,7 @@ def set_scanned_session():
 @app.route('/data')
 def data():
     if session.get('scanned'):
-        if session.get('scanned_content') == 'BIONA':
+        if session.get('scanned_content') == 'biona':
             return render_template('data.html', content=session.get('scanned_content'))
         else:
             return redirect('/scan')
@@ -123,6 +128,7 @@ def login():
                     session['username'] = user['username']  # Store username in session
                     session['role'] = user['role']  # Store username in session
                     session['saldo'] = user['saldo']  # Store username in session
+                    session['email'] = user['email']  # Store username in session
                     return redirect('/?success=1')
                 else:
                     return render_template('auth/login.html', password_error=True)
@@ -138,6 +144,49 @@ def logout():
     session.pop('role', None)
     session.pop('saldo', None)
     return redirect('/')
+
+@app.route('/tukar_saldo', methods=['GET', 'POST'])
+def tukar_saldo():
+    payment_method = request.args.get('payment')
+
+    if 'user_id' in session:
+        user_id = session['user_id']
+
+        with db.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute("SELECT saldo FROM tb_users WHERE id = %s", (user_id,))
+            user = cursor.fetchone()
+
+            if user:
+                saldo = user['saldo']
+                
+                if saldo < 10000:
+                    return render_template('index.html', saldo=saldo, _req=1)  # Contoh halaman notifikasi saldo tidak mencukupi
+                if payment_method in ['gopay', 'bca', 'mandiri']:
+                    if request.method == 'POST':
+                        payment = request.form.get('payment')
+                        payment_gopay = request.form.get('payment_bca')
+                        payment_gopay = request.form.get('payment_mandiri')
+                        no_payment = request.form.get('no_payment')
+                        email = request.form.get('email')
+                        tanggal_transaksi = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        status = 'UNPAID'
+                        bukti_pembayaran = 'UNPAID'
+                        
+                        with db.cursor() as insert_cursor:
+                            sql = "INSERT INTO tb_transaksi (email, payment, no_payment, nominal, tanggal_transaksi, status, bukti_pembayaran) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                            insert_cursor.execute(sql, (email, payment, no_payment, saldo, tanggal_transaksi, status, bukti_pembayaran))
+                            # Operasi UPDATE
+                            sql_update = "UPDATE tb_users SET saldo = 0 WHERE id = %s"
+                            cursor.execute(sql_update, (user_id,))
+                                
+                            db.commit()
+                            return redirect(url_for('tukar_saldo', payment=payment_gopay, success_req=1))
+
+                    return render_template('tukar_saldo.html', payment_method=payment_method, saldo=saldo)
+                else:
+                    return redirect(url_for('index', saldo=saldo))
+    
+    return render_template('index.html')
 
 
 if __name__ == '__main__':

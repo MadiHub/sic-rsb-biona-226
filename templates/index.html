@@ -94,6 +94,16 @@
               </ul>
             </li>
           </ul>
+          
+          <!-- ADMIN -->
+          {% if session['role'] == 'ADMIN' %}
+          <a href="{{ url_for('dashboard') }}">
+            <button class="btn m-3"  style="background-color: #76b852; color: white;">Dashboard</button>
+          </a>
+          {% else %}
+          {% endif %}
+          <!-- END ADMIN -->
+
           {% if 'user_id' in session %}
           <button class="btn" onclick="confirmLogout()" style="background-color: #76b852; color: white;">Logout</button>
           {% else %}
@@ -103,6 +113,9 @@
       </div>
     </nav>  
     <!-- END -->
+
+
+
 
     <!-- CARD-1 -->
     <div class="container">
@@ -154,9 +167,14 @@
         <div class="row justify-content-center">
             <div class="col col-lg-8 col-md-8 col-sm-8">
               <button class="btn btn-succsess" id="toggleButton">Panduan</button>
-              <p class="mt-3 d-none" id="hiddenText">1. Berangkat</p>
-              <p class="mt-3 d-none" id="hiddenText">2. Tidur</p>
-              <p class="mt-3 d-none" id="hiddenText">3. Sic</p>
+              <p class="mt-3 d-none" id="hiddenText">1. Scan Qris Yang Telah Di Sediakan Pada RSP </p>
+              <p class="mt-3 d-none" id="hiddenText">2. Taro Sampah Anda Diatas RSB</p>
+              <p class="mt-3 d-none" id="hiddenText">3. Setelah Berat Terdeteksi Oleh RSB, Lalu Tekan Simpan Saldo</p>
+              <p class="mt-3 d-none" id="hiddenText">4. Lalu Saldo Tersimpan Otomatis Di Halaman Utama</p>
+              <p class="mt-3 d-none" id="hiddenText">5. Jika Ingin Menukar, Click Tukar Pada Halaman Utama</p>
+              <p class="mt-3 d-none" id="hiddenText">6. Pilih Metode Pembayaran</p>
+              <p class="mt-3 d-none" id="hiddenText">7. Masuka Nomor Payment, Lalu Simpan</p>
+              <p class="mt-3 d-none" id="hiddenText"><b> ("Minimal Penarikan Rp. 10000")</b></p>
             </div>
         </div>
     </div>

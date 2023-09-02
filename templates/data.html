@@ -51,25 +51,8 @@
     </div>
   </nav>  
   <!-- END -->
-    
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-sm-12 col-md-10 col-lg-6">
-                <div class="card text-center" style="width: 18rem;">
-                    <div class="card-header">
-                      BIONA
-                    </div>
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item">Berat Sampah : </li>
-                      <li class="mt-2 mb-2"> <button onclick="endSession()" class="btn btn-primary">Selesai Scanning </button></li>
-                    </ul>
-                  </div>
-               
-            </div>
-        </div>
-    </div>
-
-       <!-- CARD-1 -->
+  
+    <!-- CARD-1 -->
     <div class="container">
       <div class="row justify-content-center">
           <div class="col-lg-8 col-md-8 col-sm-15">
@@ -87,14 +70,8 @@
                       <label for="rupiah" class="form-label">Konversi Rupiah</label>
                       <input type="text" class="form-control" id="rupiah" name="rupiah" readonly>
                   </div>
-                  <div class="mb-3 form-check">
-                      <input type="checkbox" class="form-check-input" id="showPassword">
-                      <label class="form-check-label" for="showPassword">Show Password</label>
-                  </div>
-                  <a href="{{ url_for('register') }}">Belum Punya Akun ?</a>
-                  <button type="submit" style="background-color: #76b852; color: white;" class="btn mt-3 w-100">Submit</button>
+                  <button type="submit" style="background-color: #76b852; color: white;" class="btn mt-3 w-100">Simpan Saldo</button>
               </form>
-                      
               </div>
             </div>
           </div>
@@ -105,25 +82,6 @@
     
     
   
-    <p>Berat: 500 gram</p>
-    <p>Harga per gram: 3 Rp</p>
-    
-    <button id="hitungButton">Hitung Total Harga</button>
-    
-    <p id="hasilHarga"></p>
-
-       <script>
-        const beratInput = document.getElementById('berat');
-        const rupiahInput = document.getElementById('rupiah');
-
-        beratInput.addEventListener('input', () => {
-            const berat = parseFloat(beratInput.value);
-            const hargaPerGram = 3;
-            const totalHarga = berat * hargaPerGram;
-
-            rupiahInput.value = `${totalHarga} Rp`;
-        });
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ url_for('static', filename='allert.js') }}"></script>
     <script>

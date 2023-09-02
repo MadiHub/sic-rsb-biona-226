@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 01 Sep 2023 pada 11.07
+-- Waktu pembuatan: 02 Sep 2023 pada 17.23
 -- Versi server: 8.0.33-0ubuntu0.22.04.4
 -- Versi PHP: 8.1.2-1ubuntu2.13
 
@@ -59,6 +59,14 @@ CREATE TABLE `tb_transaksi` (
   `bukti_pembayaran` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data untuk tabel `tb_transaksi`
+--
+
+INSERT INTO `tb_transaksi` (`id_transaksi`, `email`, `payment`, `no_payment`, `nominal`, `tanggal_transaksi`, `status`, `bukti_pembayaran`) VALUES
+(23, 'cahyosaputrorahmadi@gmail.com', 'GOPAY', 817718181, 12883, '2023-09-01 11:15:00', 'PAID', '<FileStorage: \'MANDIRI.png\' (\'image/png\')>'),
+(24, 'cahyosaputrorahmadi@gmail.com', 'GOPAY', 817718181, 829237, '2023-09-02 11:58:52', 'PAID', '<FileStorage: \'gopay.png\' (\'image/png\')>');
+
 -- --------------------------------------------------------
 
 --
@@ -79,7 +87,10 @@ CREATE TABLE `tb_users` (
 --
 
 INSERT INTO `tb_users` (`id`, `email`, `username`, `password`, `role`, `saldo`) VALUES
-(8, 'biona226@gmail.com', 'Biona', '$2b$12$n2677u1Uy7mFKneho/BF6uvCDtSAsugUG3rgKd8oMKw6zvenjiDPK', 'user', 0);
+(8, 'biona226@gmail.com', 'Admin\r\n', '$2b$12$n2677u1Uy7mFKneho/BF6uvCDtSAsugUG3rgKd8oMKw6zvenjiDPK', 'ADMIN', 0),
+(9, 'cahyosaputrorahmadi@gmail.com', 'Rahmadi', '$2b$12$RMMfP/Fmx0ygZvY.11Y7KuCgZSnAFZ87OyRs6SjnLS3IDu05RXJcS', 'user', 0),
+(10, 'biona@gmail.com', 'Biona ', '$2b$12$Ny9wmBKzVhBA4HTUEELQ5uwjfycnjIke8NF.Z4cHz1feAWIurL2VC', 'user', 0),
+(11, 'raihan@gmail.com', 'raihani1', '$2b$12$Xm/7yTgAFizH/Hxm7ht.MOnu43I9LxwCaDRjeQr9ursyQ3.LcbqgC', 'user', 0);
 
 --
 -- Indexes for dumped tables
@@ -117,13 +128,13 @@ ALTER TABLE `tb_payment`
 -- AUTO_INCREMENT untuk tabel `tb_transaksi`
 --
 ALTER TABLE `tb_transaksi`
-  MODIFY `id_transaksi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_transaksi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_users`
 --
 ALTER TABLE `tb_users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

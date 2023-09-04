@@ -79,24 +79,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent" >
           <ul class="navbar-nav me-auto mb-2 mb-lg-0" z>
-            <li class="nav-item" >
-              <a class="nav-link active" aria-current="page" href="#" style="color: #76b852;">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#" style="color: #76b852;">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #76b852;">
-                Dropdown
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" style="color: #76b852;">Action</a></li>
-              </ul>
-            </li>
+            
           </ul>
           
           <!-- ADMIN -->
-          {% if session['role'] == 'ADMIN' %}
+          {% if session['role'] == 'admin' %}
           <a href="{{ url_for('dashboard') }}">
             <button class="btn m-3"  style="background-color: #76b852; color: white;">Dashboard</button>
           </a>
@@ -155,6 +142,14 @@
                               <h6 class="ml-1 mb-0 text-right" style=" margin-left: 5px;">Tukar</h6>
                             </div>
                         </button>
+
+                        <a href="{{ url_for('status_transaksi') }}" class="btn btn-light mt-4" style="box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);">
+                          <div class="d-flex align-items-center">
+                            <i class="bi bi-qr-code-scan" style="color: #76b852; "></i>
+                            <br>
+                            <h6 class="ml-1 mb-0 text-right" style=" margin-left: 5px;">Status Transaksi</h6>
+                          </div>
+                      </a>
                     </div>
               </div>
             </div>

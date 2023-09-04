@@ -4,16 +4,117 @@ import os
 import pymysql
 import bcrypt
 
+import time
+import sys
+import RPi.GPIO as GPIO
+from hx711 import HX711
+from RPLCD import i2c
+from time import sleep
+from flask import Flask
+import threading
+
 app = Flask(__name__)
 
+EMULATE_HX711 = False
+
+referenceUnit = 1
+
+if not EMULATE_HX711:
+    from hx711 import HX711
+else:
+    from emulated_hx711 import HX711
+
+def cleanAndExit():
+    print("Cleaning...")
+
+    if not EMULATE_HX711:
+        GPIO.cleanup()
+        
+    print("Bye!")
+    sys.exit()
+
+# Inisialisasi HX711
+hx711 = HX711(5, 6)
+hx711.set_reading_format("MSB", "MSB")
+hx711.set_reference_unit(1)
+hx711.reset()
+hx711.tare()
+
+# Inisialisasi driver LCD
+lcd = i2c.CharLCD('PCF8574', 0x27)
+
+# Konfigurasi pin GPIO untuk servo
+servo_pin = 18  # Ganti dengan nomor pin GPIO yang sesuai
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servo_pin, GPIO.OUT)
+
+# Inisialisasi PWM (Pulse Width Modulation) untuk servo
+pwm = GPIO.PWM(servo_pin, 50)  # Frekuensi PWM 50 Hz (umum untuk servo)
+pwm.start(0)  # Awalnya servo berada di posisi awal (sudut 0 derajat)
+
+def set_servo_angle(angle):
+    duty_cycle = (angle / 18) + 2  # Menghitung duty cycle berdasarkan sudut (dalam derajat)
+    pwm.ChangeDutyCycle(duty_cycle)
+    time.sleep(0.1)  # Beri waktu servo untuk bergerak
+
+# Definisikan fungsi untuk pembacaan sensor HX711
+current_val = 0
+
+# Fungsi untuk mengambil data val terbaru
+def get_current_val():
+    global current_val
+    return current_val
+
+# # Fungsi untuk membaca sensor dan menyimpan data val ke variabel global
+def read_sensor():
+    global current_val
+    while True:
+        val = max(0, int(hx711.get_weight(5)))
+        current_val = val  # Simpan nilai val ke variabel global
+        lcd.write_string("Berat: {} gram".format(val))
+        sleep(2)
+        lcd.clear()
+        sleep(0.1)
+        print(val)
+        if val > 5:
+            set_servo_angle(88)  # Jika berat di atas 5 gram, putar servo ke posisi tertentu
+        else:
+            set_servo_angle(-3)
+       ## Jika berat di bawah atau sama dengan 5 gram, kembalikan 
+        hx711.power_down()
+        hx711.power_up()
+        time.sleep(0.1)
+
+# Jalankan fungsi pembacaan sensor dalam thread terpisah
+sensor_thread = threading.Thread(target=read_sensor)
+sensor_thread.daemon = True
+sensor_thread.start()
 
 app.secret_key = os.urandom(24)  # Atur kunci sesi yang aman
+
+
+UPLOAD_FOLDER = 'static/bukti_tf'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# def read_sensor():
+#     while True:
+#         val = max(0, int(hx711.get_weight(5)))
+#         lcd.write_string("Berat: {} gram".format(val))
+#         sleep(2)
+#         lcd.clear()
+#         sleep(0.1)
+#         print(val)
+#         hx711.power_down()
+#         hx711.power_up()
+#         time.sleep(0.1)
+
+
 
 # config
 db = pymysql.connect(
     host="localhost",
     user="root",
-    password="R4hm4d1$",
+    password="Biona226",
     database="sic-biona"
 )
 
@@ -60,11 +161,16 @@ def set_scanned_session():
 def data():
     if session.get('scanned'):
         if session.get('scanned_content') == 'biona':
-            return render_template('data.html', content=session.get('scanned_content'))
+             # Ambil data val terbaru dari variabel global
+            val = get_current_val() * 3
+
+            # Kemudian, lewatkan nilai ini ke template HTML
+            return render_template('data.html', content=session.get('scanned_content'), val=val)
         else:
             return redirect('/scan')
     else:
-        return redirect('/scan')
+        return redirect('/scan') 
+       
 
 @app.route('/end_session')
 def end_session():
@@ -190,7 +296,7 @@ def tukar_saldo():
 
 @app.route('/dashboard')
 def dashboard():
-    if 'role' in session and session['role'] == 'ADMIN':
+    if 'role' in session and session['role'] == 'admin':
         with db.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT * FROM tb_transaksi")
             transaksi = cursor.fetchall()
@@ -218,7 +324,7 @@ def submit_update(id):
             cursor.execute(
                 "SELECT role FROM tb_users WHERE id = %s", (user_id,))
             user = cursor.fetchone()
-            if user and (user['role'] == 'ADMIN' or user_id == id):
+            if user and (user['role'] == 'admin' or user_id == id):
                 # Di sini Anda dapat mengambil data yang diperbarui dari formulir (request.form)
                 # Contoh:
                 updated_email = request.form.get('email')
@@ -229,19 +335,64 @@ def submit_update(id):
                 updated_status = request.form.get('status')
                 updated_bukti_tf = request.files['bukti_tf'] if 'bukti_tf' in request.files else None
 
+                if updated_bukti_tf:
+                    # Pastikan nama file unik, misalnya dengan menggunakan ID transaksi
+                    filename = f"bukti_tf_{id}.jpg"  # Ganti dengan ekstensi file yang sesuai
+
+                    # Simpan file di dalam folder bukti_tf
+                    updated_bukti_tf.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                    # Selanjutnya, Anda dapat menyimpan nama file ini dalam database jika perlu.
+                    # ...
+
                 # Selanjutnya, lakukan pembaruan data dalam database berdasarkan ID yang diberikan
                 with db.cursor() as update_cursor:
                     sql = "UPDATE tb_transaksi SET email = %s, payment = %s, no_payment = %s, nominal = %s, tanggal_transaksi = %s, status = %s, bukti_pembayaran = %s WHERE id_transaksi = %s"
                     update_cursor.execute(sql, (
-                        updated_email, updated_payment, updated_no_payment, updated_nominal, updated_tanggal_transaksi, updated_status, updated_bukti_tf, id))
+                        updated_email, updated_payment, updated_no_payment, updated_nominal, updated_tanggal_transaksi, updated_status, filename, id))
                     db.commit()
 
                 # Setelah pembaruan selesai, Anda dapat mengarahkan pengguna kembali ke halaman utama
                 return redirect(url_for('dashboard', success_update=True))
-    
+
     # Jika pengguna tidak memiliki izin atau tidak masuk, arahkan ke halaman utama
     return redirect(url_for('index'))
 
-# ... (kode lainnya)
+@app.route('/status_transaksi')
+def status_transaksi():
+    if 'email' in session:
+        email = session['email']
+        with db.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                "SELECT * FROM tb_transaksi WHERE email = %s", (email))
+            semua = cursor.fetchall()
+            if email:
+                semua_transaksi = semua
+                # Mengambil semua data dari tabel tb_payment
+                return render_template('status_transaksi.html', semua_transaksi=semua_transaksi)
+
+    return render_template('index.html')
+
+@app.route('/konversi_rupiah', methods=['POST'])
+def konversi_rupiah():
+    if request.method == 'POST':
+        val = request.form.get('nominal')  # Ambil nilai 'nominal' dari form
+
+        # Ambil email dari sesi pengguna
+        email = session.get('email')
+
+        # Pastikan email ada dalam sesi
+        if email:
+            # Di sini Anda dapat melakukan konversi Rupiah atau operasi lain yang diperlukan
+            # Misalnya, Anda dapat mengganti Rp dengan $ jika diperlukan
+
+            # Update saldo pengguna berdasarkan email
+            with db.cursor() as update_cursor:
+                sql = "UPDATE tb_users SET saldo = %s WHERE email = %s"
+                update_cursor.execute(sql, (val, email))
+                db.commit()
+
+            # Setelah melakukan operasi, Anda dapat mengirimkan respons atau mengarahkan pengguna ke halaman lain
+            return redirect(url_for('index',  ambil_saldo=1)) # Ganti 'konversi_rupiah.html' dengan halaman yang sesuai
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5002)

@@ -20,6 +20,28 @@ const urlParamsReq = new URLSearchParams(window.location.search);
       history.replaceState(null, '', url);
  }
 
+ const urlParamsAmbil = new URLSearchParams(window.location.search);
+ const successParamAmbil = urlParamsAmbil.get('ambil_saldo');
+
+ // If success parameter is 1, show success alert
+ if (successParamAmbil === '1') {
+     Swal.fire({
+         icon: 'success',
+         title: 'Success!',
+         text: 'You have successfully Ambil Saldo',
+         confirmButtonColor: '#3085d6',
+         confirmButtonText: 'OK'
+     }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/'; // Redirect to login page
+        }
+      });
+      // Remove the 'success' parameter from the URL
+      var url = new URL(window.location.href);
+      url.searchParams.delete('ambil_saldo');
+      history.replaceState(null, '', url);
+ }
+
 
 // END
 
